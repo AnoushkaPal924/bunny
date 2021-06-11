@@ -1,47 +1,99 @@
-const Bodies = Matter.Bodies ; 
-const Body = Matter.Body;
-const World = Matter.World;
-const Engine = Matter.Engine;
-
-var bunny;
-var road, groundImg;
-var engine, world;
-var ob = [];
-
-function Preload(){
-  groundImg = loadImage("g.jpg");
+var bunny, ground, groundImg, bunnyImg, trees;
+var gameState 
+var obst1
+var score
+var obj =[]
+function preload(){
+    groundImg = loadImage('g.jpg')
+    bunnyImg = loadImage('bunny.png');
 }
 
-function setup() {
-  createCanvas(800,400);
-  //createSprite(400, 200, 50, 50);
-  engine = Engine.create();
-  world = engine.world; 
+function setup(){
 
-  bunny = new Bunny(200,200,20,20);
-  road = new Ground(180,200,800,10);
- 
- 
-}
-if(frameCount%50 == 0){
-ob = new Obst1(200,200,10,10);
-ob.body.velocityX = -4;
-}
-function draw() {
-  background(255,255,255);  
+    createCanvas(800,400)
+    
+    score = 0;
+    bunny = createSprite(200,200,20,20)
+    bunny.addImage(bunnyImg);
+    bunny.scale = 0.125;
+    ground= createSprite(180,350,800,10)
+   // ground.x = ground.width/2-300;
+    ground.velocityX = -3
+  //  ground.addImage('ground', groundImg)
   
-//  road.display();
-//  bunny.display();
+}
+gameState = 'play1';
+
+function draw(){
+  //  background('black')
   
-    bunny.body.velocityY = bunny.body.velocityY + 0.1;
-   if (bunny.body.isTouching(road.body)){
-    if(keyIsDown('32')){
-      //console.log("f");
-      //&& bunny.y >= 100 
-      bunny.body.velocityY= -4;
-       }else{ bunny.body.collide(road.body);}
-   
+    //bunny.y = bunny.y + 5 
+    // if(frameCount%10==0){
+    //     score++;
+    // };
+
+    score = score + Math.round(getFrameRate()/60);
+
+    bunny.velocityY = bunny.velocityY + 5
+
+    text('score:'+ score,200,200);
+    if(keyDown("space") && bunny.isTouching(ground)){
+       // bunny.velocityY = bunny.velocityY-20;
+        bunny.y = bunny.y - 50
+        console.log("if")
+    }
+    else{ bunny.collide(ground);}
+
+    if(ground.x < 0){
+      //  ground.x = ground.width/2-300;
+      ground.x = 180
+         
+     if(gameState == 'play1'){
+         console.log("lol")
+         obs1()
+         obstacle2()
+         background('black')
+         if(score>5&&score<10){
+        gameState = 'play2';
+        score = 0;
+        background('yellow')
+    }
+   } 
+
+   if(gameState == 'play2'){
+    if(score>10){
+        gameState = 'play3';
+        score = 0;
+        background('red')
+    }
    }
-  
-  drawSprites();
+    }
+     
+   
+    console.log(obst1)
+    bunny.collide(ground)
+    drawSprites();
+}
+
+function obs1(){
+
+    //console.log("inside function")
+    if(frameCount % 60 ==0){
+        //console.log("inside if")
+        obst1 = createSprite(300,150,10,10);
+        obst1.velocityX = -4
+        console.log(obst1)
+
+       
+    }
+}
+
+function obstacle2(){
+    
+    if(frameCount % 70 ==0)
+    {
+        var obst2 = createSprite(250,200,20,20)
+        obst2.shapeColor = 'red'
+        obst2.velocityX = -3;
+    }
 }
