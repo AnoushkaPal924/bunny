@@ -1,10 +1,12 @@
 var bunny, ground, groundImg, bunnyImg, trees;
-var gameState 
-var obst1
-var score
+var gameState = 'play1';
+var score = 0;
+var bg = 'yellow'
 var obj =[]
+var jf, coins
+
 function preload(){
-    groundImg = loadImage('g.jpg')
+    groundImg = loadImage('g.png')
     bunnyImg = loadImage('bunny.png');
 }
 
@@ -12,88 +14,106 @@ function setup(){
 
     createCanvas(800,400)
     
-    score = 0;
+    jf = new Group()
+    coins = new Group()
+    
     bunny = createSprite(200,200,20,20)
+    //bunny.debug = true;
+    bunny.setCollider("circle",0,0,220);
     bunny.addImage(bunnyImg);
     bunny.scale = 0.125;
     ground= createSprite(180,350,800,10)
    // ground.x = ground.width/2-300;
     ground.velocityX = -3
-  //  ground.addImage('ground', groundImg)
+   ground.addImage('ground', groundImg)
   
 }
-gameState = 'play1';
+
 
 function draw(){
-  //  background('black')
+   background(bg);
   
     //bunny.y = bunny.y + 5 
     // if(frameCount%10==0){
     //     score++;
     // };
-
+    //obs1();
+    //obstacle2();
     score = score + Math.round(getFrameRate()/60);
 
-    bunny.velocityY = bunny.velocityY + 5
+    
 
     text('score:'+ score,200,200);
-    if(keyDown("space") && bunny.isTouching(ground)){
-       // bunny.velocityY = bunny.velocityY-20;
-        bunny.y = bunny.y - 50
-        console.log("if")
-    }
-    else{ bunny.collide(ground);}
-
-    if(ground.x < 0){
+    if(keyDown("space") && bunny.y <= 359){
+        bunny.velocityY = -12 ;
+      }
+      bunny.velocityY = bunny.velocityY + 0.8;
+    if(ground.x < 300){
       //  ground.x = ground.width/2-300;
-      ground.x = 180
+      ground.x = 500
          
      if(gameState == 'play1'){
-         console.log("lol")
-         obs1()
-         obstacle2()
-         background('black')
-         if(score>5&&score<10){
+         //console.log("lol")
+         obstacle2();
+         if(score>175){
         gameState = 'play2';
         score = 0;
-        background('yellow')
+        console.log('h')
+        bg = 'black';
     }
    } 
 
    if(gameState == 'play2'){
-    if(score>10){
+    obstacle2();
+    console.log("play2")
+    if(score>275){
         gameState = 'play3';
         score = 0;
-        background('red')
+    bg = 'pink';
     }
    }
     }
      
    
-    console.log(obst1)
+    //console.log(obst1)
     bunny.collide(ground)
     drawSprites();
+
+    if(bunny.isTouching(jf)){
+        reset();
+    }
 }
 
 function obs1(){
 
     //console.log("inside function")
-    if(frameCount % 60 ==0){
+    if(frameCount % 100 ==0){
         //console.log("inside if")
-        obst1 = createSprite(300,150,10,10);
+        obst1 = createSprite(800,200,10,10);
         obst1.velocityX = -4
+        obst1.lifetime = 200;
         console.log(obst1)
-
+        coins.add(obst1);
        
     }
 }
 
 function obstacle2(){
-    
-    if(frameCount % 70 ==0)
-    {
-        var obst2 = createSprite(250,200,20,20)
+    console.log("lo");
+    if(frameCount % 10 ==0)
+    { console.log("lol");
+        var obst2 = createSprite(800,300,20,20)
         obst2.shapeColor = 'red'
         obst2.velocityX = -3;
+        obst2.lifetime = 350;
+        jf.add(obst2);
     }
+}
+
+function reset(){
+    jf.setVelocityXEach(0); 
+    coins.setVelocityXEach(0); 
+    score = 0;
+    ground.velocityX = 0; 
+
 }
